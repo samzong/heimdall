@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+  <title>Open Lody session</title>
+  <style>
+    body { font: 1rem/1.6 system-ui, sans-serif; max-width: 36rem; margin: 4rem auto; padding: 0 1.5rem; }
+  </style>
+</head>
+<body>
+  <h1>Open Lody session</h1>
+  <p id="status" role="status">Invalid session link.</p>
+  <a id="open" hidden>Open Lody</a>
+  <script>
+    const status = document.getElementById('status');
+    const link = document.getElementById('open');
+    function openSession() {
+      link.hidden = true;
+      link.removeAttribute('href');
+      status.textContent = 'Invalid session link.';
+      const fragment = location.hash.slice(1);
+      const match = /^session=([A-Za-z0-9-]+)(?:&workspace=([A-Za-z0-9-]+))?$/.exec(fragment);
+      if (!match || match[0] !== fragment) return;
+      const target = `lody://session/${match[1]}${match[2] ? `?workspace=${match[2]}` : ''}`;
+      link.href = target;
+      link.hidden = false;
+      status.textContent = 'Opening Lody. If nothing happens, use the link below.';
+      location.replace(target);
+    }
+    addEventListener('hashchange', openSession);
+    openSession();
+  </script>
+</body>
+</html>
